@@ -3,27 +3,45 @@
 
 # include <sys/time.h> // gettimeofday
 # include <string.h>   // memset
-# include <stdio.h>    // printf
+# include <stdio.h>	// printf
 # include <unistd.h>   // write, usleep
 # include <stdlib.h>   // malloc, free
 # include <pthread.h>  // pthread_***
+# include <stddef.h>   // size_t
 
-typedef struct s_state
+typedef struct s_state t_state;
+typedef struct s_phil_cont t_phil_cont;
+
+struct s_state
 {
-    int i;
-    int n;
-    pthread_t *threads;
-    int is_sim_done;
-}       t_state;
+	int n_phils;
+	int die_ms;
+	int eat_ms;
+	int sleep_ms;
+	int total_meals;
+	pthread_t *threads;
+	pthread_mutex_t *mutex_forks;
+	t_phil_cont *pcs;
+	int is_sim_done;
+};
 
-typedef struct s_phil_cont
+struct s_phil_cont
 {
-    int i;
-    t_state *s;
-} t_phil_cont;
+	int i;
+	int n_meals;
+	t_state *state;
+};
 
 
-void parse_params(int ac, char **av, t_state *s);
-void *simulate(void * arg);
+void	parse_params(int ac, char **av, t_state *state);
+void	*simulate(void * arg);
+void	show_help(void);
+void	init_state(t_state *state);
+void	clean_n_exit(t_state *state, char *error);
+void	full_clean(t_state *state);
+
+//ala libft
+size_t  ft_strlen(char *str);
+int	 ft_atoi(const char *str)
 
 #endif

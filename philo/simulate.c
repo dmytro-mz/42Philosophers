@@ -3,11 +3,13 @@
 
 void *simulate(void * arg)
 {
-    t_state *s;
+	int i;
+	t_state *state;
 
-    s = (t_state *)arg;
-    while (1)
-    {
-        
-    }
+	i = ((t_phil_cont *)arg)->i;
+	state = ((t_phil_cont *)arg)->state;
+	while (1)
+	{
+		
+	}
 }
