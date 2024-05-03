@@ -15,7 +15,7 @@ CFLAGS = -Wall -Wextra -Werror -pthread
 C_PRECOMPILE_FLAGS = -c
 C_DEBUG_FLAG = -g
 
-NAME = philo
+NAME = philo_bonus
 SRCS = $(NAME).c
 OBJS = $(SRCS:.c=.o)
 INCS = $(NAME).h
