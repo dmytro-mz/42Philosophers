@@ -1,5 +1,8 @@
 #include "philo.h"
 
+int validate_params(int ac, char **av);
+int is_number(char *str);
+
 /*
 Params:
 	number_of_philosophers: The number of philosophers and also the number of forks.
@@ -16,8 +19,13 @@ Params:
 void parse_params(int ac, char **av, t_state *state)
 {
 	if (!validate_params(ac, av))
-		swho_usage();
+		show_help();
 	state->n_phils = ft_atoi(av[1]);
+	if (state->n_phils == 0)
+	{
+		write(STDERR_FILENO, "Error: number_of_philosophers - 0\n", 34);
+		exit(1);
+	}
 	state->die_ms = ft_atoi(av[2]);
 	state->eat_ms = ft_atoi(av[3]);
 	state->sleep_ms = ft_atoi(av[4]);
@@ -34,7 +42,7 @@ int validate_params(int ac, char **av)
 		return (0);
 	i = 1;
 	while (i < ac)
-		if (!is_number(av[i]))
+		if (!is_number(av[i++]))
 			return (0);
 	return (1);
 }
@@ -45,7 +53,10 @@ int is_number(char *str)
 
 	i = 0;
 	while (str[i])
+	{
 		if (str[i] < '0' || str[i] > '9')
 			return (0);
+		i++;
+	}
 	return (1);
 }

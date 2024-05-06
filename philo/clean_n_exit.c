@@ -23,7 +23,7 @@ void destroy_mutexes(t_state *state)
 
 	i = 0;
 	while (i < state->n_phils)
-		pthread_mutex_destroy(state->mutex_forks + i);
+		pthread_mutex_destroy(state->mutex_forks + i++);
 }
 
 void clean_state(t_state *state)
@@ -35,7 +35,8 @@ void clean_state(t_state *state)
 
 void write_error(char *reason)
 {
-	write(STDERR_FILENO, "Error occured with function:", 29);
-	write(STDERR_FILENO, prefix, ft_strlen(prefix));
-	write(STDERR_FILENO, "\t\tExiting program!", 19);
+	// perror(reason);
+	write(STDERR_FILENO, "Error occured with function: ", 29);
+	write(STDERR_FILENO, reason, ft_strlen(reason));
+	write(STDERR_FILENO, ". Exiting program!\n", 19);
 }
