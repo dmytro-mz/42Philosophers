@@ -1,6 +1,6 @@
 #include "philo.h"
 
-int check_pulse(t_phil_cont *c, struct timeval now)
+int check_pulse(t_phil_context *c, struct timeval now)
 {
 	if (c->state->is_sim_done)
 		return (1);

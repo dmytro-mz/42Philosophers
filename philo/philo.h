@@ -3,16 +3,16 @@
 
 # include <sys/time.h> // gettimeofday
 # include <string.h>   // memset
-# include <stdio.h>	// printf
+# include <stdio.h>    // printf
 # include <unistd.h>   // write, usleep
 # include <stdlib.h>   // malloc, free
 # include <pthread.h>  // pthread_***
 # include <stddef.h>   // size_t
 
-# define MAIN_CHECKER_SLEEP 1000
+# define MAIN_CHECKER_SLEEP 100
 
 typedef struct s_state t_state;
-typedef struct s_phil_cont t_phil_cont;
+typedef struct s_phil_cont t_phil_context;
 
 struct s_state
 {
@@ -23,7 +23,7 @@ struct s_state
 	int total_meals;
 	pthread_t *threads;
 	pthread_mutex_t *mutex_forks;
-	t_phil_cont *pcs;
+	t_phil_context *pcs;
 	int is_sim_done;
 };
 
@@ -47,6 +47,6 @@ void	clean_n_exit(t_state *state, char *error);
 void	full_clean(t_state *state);
 void	log_message(int phil_n, char *msg);
 int		get_time_diff_ms(struct timeval gr, struct timeval lt);
-int		check_pulse(t_phil_cont *c, struct timeval now);
+int		check_pulse(t_phil_context *c, struct timeval now);
 
 #endif

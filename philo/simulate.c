@@ -1,19 +1,18 @@
 #include "philo.h"
 
-void eat(t_phil_cont *c);
-int try_update_time(t_phil_cont *c);
+void eat(t_phil_context *c);
+int try_update_time(t_phil_context *c);
 
 void *simulate(void * arg)
 {
 	int i;
 	t_state *state;
 
-	i = ((t_phil_cont *)arg)->i;
-	state = ((t_phil_cont *)arg)->state;
-	gettimeofday(&((t_phil_cont *)arg)->last_meal_tv, NULL);
+	i = ((t_phil_context *)arg)->i;
+	state = ((t_phil_context *)arg)->state;
 	while (!state->is_sim_done)
 	{
-		eat((t_phil_cont *)arg);
+		eat((t_phil_context *)arg);
 		if (!state->is_sim_done)
 		{
 			log_message(i, "is sleeping");
@@ -29,7 +28,7 @@ void *simulate(void * arg)
 // 0               i              i + 1
 // 1             i + 1              i 
 //             i + (i % 2)    i + 1 - (i % 2)
-void eat(t_phil_cont *c)
+void eat(t_phil_context *c)
 {
 	int fork_1;
 	int fork_2;
@@ -39,7 +38,9 @@ void eat(t_phil_cont *c)
 	pthread_mutex_lock(&c->state->mutex_forks[fork_1]);
 	if (!c->state->is_sim_done)
 		log_message(c->i, "has taken a fork");
-	pthread_mutex_lock(&c->state->mutex_forks[fork_2]);
+	if (pthread_mutex_lock(&c->state->mutex_forks[fork_2]) != 0)
+		while (!c->state->is_sim_done)
+			usleep(100);
 	if (!c->state->is_sim_done)
 		log_message(c->i, "has taken a fork");
 	if (!c->state->is_sim_done && !try_update_time(c))
@@ -52,7 +53,7 @@ void eat(t_phil_cont *c)
 	pthread_mutex_unlock(&c->state->mutex_forks[fork_2]);
 }
 
-int try_update_time(t_phil_cont *c)
+int try_update_time(t_phil_context *c)
 {
 	struct timeval now;
 

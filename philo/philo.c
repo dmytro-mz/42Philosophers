@@ -18,8 +18,8 @@ int main(int ac, char **av)
 	}
 	while (!s.is_sim_done)
 	{
-		usleep(MAIN_CHECKER_SLEEP);
 		check_philosophers(&s);
+		usleep(MAIN_CHECKER_SLEEP);
 	}
 	i = 0;
 	while (i < s.n_phils)
@@ -39,7 +39,7 @@ void check_philosophers(t_state *s)
 	while (i < s->n_phils)
 		if (check_pulse(s->pcs + i++, now))
 			break ;
-	if (s->total_meals >= 0)
+	if (!s->is_sim_done && s->total_meals >= 0)
 	{
 		i = 0;
 		while (i < s->n_phils)
