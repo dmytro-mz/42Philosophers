@@ -16,17 +16,19 @@ typedef struct s_state t_state;
 
 struct s_state
 {
-	int         n_phils;
-	int         die_ms;
-	int         eat_ms;
-	int         sleep_ms;
-	int         total_meals;
-    pid_t       *children_pid;
-    sem_t       *forks_access;
-    sem_t       *forks;
-    sem_t       *n_phil_full;
-    int         is_simulation_done;
-    int         i;
+	int             n_phils;
+	int             die_ms;
+	int             eat_ms;
+	int             sleep_ms;
+	int             total_meals;
+	int             n_meals;
+    struct timeval  last_meal_tv;
+    pid_t           *children_pid;
+    sem_t           *forks_access;
+    sem_t           *forks;
+    sem_t           *n_phil_full;
+    int             i;
+    int             is_sim_done;
 };
 
 //ala libft

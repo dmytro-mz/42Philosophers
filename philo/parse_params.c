@@ -32,6 +32,8 @@ void parse_params(int ac, char **av, t_state *state)
 	state->total_meals = -1;
 	if (ac == 6)
 		state->total_meals = ft_atoi(av[5]);
+	if (state->total_meals == 0)
+		exit(0);
 }
 
 int validate_params(int ac, char **av)
