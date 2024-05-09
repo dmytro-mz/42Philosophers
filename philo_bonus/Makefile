@@ -17,7 +17,16 @@ C_PRECOMPILE_FLAGS = -c
 C_DEBUG_FLAG = -g
 
 NAME = philo_bonus
-SRCS = $(NAME).c
+SRCS = $(NAME).c \
+       ala_libft.c \
+       check_pulse.c \
+       clean_n_exit.c \
+       init_state.c \
+       log_message.c \
+       parse_params.c \
+       show_help.c \
+       simulate.c \
+       time_funcs.c
 OBJS = $(SRCS:.c=.o)
 INCS = $(NAME).h
 INCS_DIR = $(dir $(INCS))
