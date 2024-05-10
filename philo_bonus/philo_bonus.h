@@ -27,8 +27,10 @@ struct s_state
 	sem_t			*forks_access;
 	sem_t			*forks;
 	sem_t			*n_phil_full;
+	sem_t			*g_is_sim_done;
 	int				i;
 	int				is_sim_done;
+	int				is_all_phil_full;
 };
 
 //ala libft

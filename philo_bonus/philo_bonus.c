@@ -18,6 +18,9 @@ int	main(int ac, char **av)
 	wait_stop_criterias(&s);
 	if (s.total_meals > 0 && pthread_join(th, NULL) != 0)
 		clean_n_raise(&s, "pthread_join");
+	s.i = 0;
+	while (s.i < s.n_phils)
+        waitpid(s.children_pid[s.i++], NULL, 0);
 	full_clean(&s);
 	return (0);
 }
@@ -43,12 +46,13 @@ void	wait_stop_criterias(t_state *state)
 	while (1)
 	{
 		finished_pid = waitpid(-1, NULL, WNOHANG);
-		if (state->is_sim_done || finished_pid > 0)
+		if (state->is_all_phil_full || finished_pid > 0)
 		{
 			i = 0;
 			while (i < state->n_phils)
             {
 				sem_post(state->n_phil_full);
+				sem_post(state->g_is_sim_done);
                 i++;
             }
 			return ;
@@ -69,6 +73,6 @@ void	*n_meals_routine(void *arg)
 		sem_wait(state->n_phil_full);
 		i++;
 	}
-	state->is_sim_done = 1;
+	state->is_all_phil_full = 1;
 	return (NULL);
 }

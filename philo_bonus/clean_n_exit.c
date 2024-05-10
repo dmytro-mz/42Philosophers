@@ -8,22 +8,20 @@ void clean_n_raise(t_state *state, char *failed_func_name)
 
 void full_clean(t_state *state)
 {
-    int i = 0;
-    
-	while (i < state->i)
-        kill(state->children_pid[i++], SIGINT);
     partial_clean(state);
+	sem_unlink("forks_access");
+	sem_unlink("forks");
+	sem_unlink("n_phil_full");
+	sem_unlink("g_is_sim_done");
 }
 
 void partial_clean(t_state *state)
 {
     free(state->children_pid);
 	sem_close(state->forks_access);
-	sem_unlink("forks_access");
 	sem_close(state->forks);
-	sem_unlink("forks");
 	sem_close(state->n_phil_full);
-	sem_unlink("n_phil_full");
+	sem_close(state->g_is_sim_done);
 }
 
 void exit_with_error(char *failed_func_name)
