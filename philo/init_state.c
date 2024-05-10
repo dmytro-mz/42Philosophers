@@ -1,10 +1,22 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   init_state.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dmoroz <dmoroz@student.42warsaw.pl>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/05/10 14:07:27 by dmoroz            #+#    #+#             */
+/*   Updated: 2024/05/10 14:07:27 by dmoroz           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 
-void init_state(t_state *state)
+void	init_state(t_state *state)
 {
-	int i;
-	struct timeval now;
-	pthread_mutexattr_t attr;
+	int					i;
+	struct timeval		now;
+	pthread_mutexattr_t	attr;
 
 	state->threads = malloc(sizeof(pthread_t) * state->n_phils);
 	state->mutex_forks = malloc(sizeof(pthread_mutex_t) * state->n_phils);

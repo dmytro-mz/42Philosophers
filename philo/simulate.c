@@ -1,12 +1,24 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   simulate.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dmoroz <dmoroz@student.42warsaw.pl>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/05/10 14:06:56 by dmoroz            #+#    #+#             */
+/*   Updated: 2024/05/10 14:08:00 by dmoroz           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 
-void eat(t_phil_context *c);
-int try_update_time(t_phil_context *c);
+void	eat(t_phil_context *c);
+int		try_update_time(t_phil_context *c);
 
-void *simulate(void * arg)
+void	*simulate(void *arg)
 {
-	int i;
-	t_state *state;
+	int		i;
+	t_state	*state;
 
 	i = ((t_phil_context *)arg)->i;
 	state = ((t_phil_context *)arg)->state;
@@ -28,10 +40,10 @@ void *simulate(void * arg)
 // 0               i              i + 1
 // 1             i + 1              i 
 //             i + (i % 2)    i + 1 - (i % 2)
-void eat(t_phil_context *c)
+void	eat(t_phil_context *c)
 {
-	int fork_1;
-	int fork_2;
+	int	fork_1;
+	int	fork_2;
 
 	fork_1 = (c->i + (c->i % 2)) % c->state->n_phils;
 	fork_2 = (c->i + 1 - (c->i % 2)) % c->state->n_phils;
@@ -53,9 +65,9 @@ void eat(t_phil_context *c)
 	pthread_mutex_unlock(&c->state->mutex_forks[fork_2]);
 }
 
-int try_update_time(t_phil_context *c)
+int	try_update_time(t_phil_context *c)
 {
-	struct timeval now;
+	struct timeval	now;
 
 	gettimeofday(&now, NULL);
 	if (!check_pulse(c, now))

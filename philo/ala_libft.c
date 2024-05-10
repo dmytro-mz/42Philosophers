@@ -1,8 +1,20 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ala_libft.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dmoroz <dmoroz@student.42warsaw.pl>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/05/10 14:07:18 by dmoroz            #+#    #+#             */
+/*   Updated: 2024/05/10 14:07:18 by dmoroz           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 
-size_t ft_strlen(char *str)
+size_t	ft_strlen(char *str)
 {
-	size_t size;
+	size_t	size;
 
 	size = 0;
 	while (str[size])
