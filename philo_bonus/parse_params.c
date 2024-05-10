@@ -1,22 +1,25 @@
 #include "philo_bonus.h"
 
-int validate_params(int ac, char **av);
-int is_number(char *str);
+int	validate_params(int ac, char **av);
+int	is_number(char *str);
 
 /*
 Params:
-	number_of_philosophers: The number of philosophers and also the number of forks.
-	time_to_die (in milliseconds): If a philosopher didn’t start eating time_to_die 
-			milliseconds since the beginning of their last meal or the beginning of
-			the simulation, they die.
-	time_to_eat (in milliseconds): The time it takes for a philosopher to eat.
-			During that time, they will need to hold two forks
+	number_of_philosophers: The number of philosophers and also the number
+			of forks.
+	time_to_die (in milliseconds): If a philosopher didn’t start eating
+			time_to_die milliseconds since the beginning of their last
+			meal or the beginning of the simulation, they die.
+	time_to_eat (in milliseconds): The time it takes for a philosopher
+			to eat. During that time, they will need to hold two forks
 	time_to_sleep (in milliseconds): The time a philosopher will spend sleeping
-	[number_of_times_each_philosopher_must_eat] (optional argument): If all philosophers 
-			have eaten at least number_of_times_each_philosopher_must_eat times, the
-			simulation stops. If not specified, the simulation stops when a philosopher dies.
+	[number_of_times_each_philosopher_must_eat] (optional argument): If all
+			philosophers have eaten at least
+			number_of_times_each_philosopher_must_eat times, the simulation
+			stops. If not specified, the simulation stops when a philosopher
+			dies.
 */
-void parse_params(int ac, char **av, t_state *state)
+void	parse_params(int ac, char **av, t_state *state)
 {
 	if (!validate_params(ac, av))
 		show_help();
@@ -36,9 +39,9 @@ void parse_params(int ac, char **av, t_state *state)
 		exit(0);
 }
 
-int validate_params(int ac, char **av)
+int	validate_params(int ac, char **av)
 {
-	int i;
+	int	i;
 
 	if (ac < 5 || ac > 6)
 		return (0);
@@ -49,9 +52,9 @@ int validate_params(int ac, char **av)
 	return (1);
 }
 
-int is_number(char *str)
+int	is_number(char *str)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (str[i])

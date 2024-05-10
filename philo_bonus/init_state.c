@@ -1,6 +1,6 @@
 #include "philo_bonus.h"
 
-void init_state(t_state *s)
+void	init_state(t_state *s)
 {
 	s->i = 0;
 	s->is_sim_done = 0;

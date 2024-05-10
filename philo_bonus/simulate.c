@@ -1,14 +1,18 @@
 #include "philo_bonus.h"
 
 void	eat(t_state *state);
+void	take_forks(t_state *state);
 void	*is_phil_alive(void *arg);
+void	*is_global_done(void *arg);
 
 void	simulate(t_state *state)
 {
-	pthread_t  is_alive_th;
-	
+	pthread_t	is_alive_th;
+	pthread_t	is_g_done_th;
+
 	gettimeofday(&state->last_meal_tv, NULL);
-	if (pthread_create(&is_alive_th, NULL, &is_phil_alive, state) != 0)
+	if (pthread_create(&is_alive_th, NULL, &is_phil_alive, state) != 0
+		|| pthread_create(&is_g_done_th, NULL, &is_global_done, state) != 0)
 		exit_with_error("pthread_create");
 	while (!state->is_sim_done)
 	{
@@ -21,7 +25,8 @@ void	simulate(t_state *state)
 		if (!state->is_sim_done)
 			log_message(state->i, "is thinking");
 	}
-	if (pthread_join(is_alive_th, NULL) != 0)
+	if (pthread_join(is_alive_th, NULL) != 0
+		|| pthread_join(is_g_done_th, NULL) != 0)
 		exit_with_error("pthread_join");
 	partial_clean(state);
 	exit(0);
@@ -29,24 +34,9 @@ void	simulate(t_state *state)
 
 void	eat(t_state *state)
 {
-	struct timeval now;
+	struct timeval	now;
 
-	int a = -42;
-	sem_getvalue(state->forks_access, &a);
-	sem_wait(state->forks_access);
-	sem_wait(state->forks);
-	if (!state->is_sim_done)
-		log_message(state->i, "has taken a fork");
-	if (state->n_phils == 1)
-	{
-		while (!state->is_sim_done)
-			usleep(100);
-		return ;
-	}
-	sem_wait(state->forks);
-	if (!state->is_sim_done)
-		log_message(state->i, "has taken a fork");
-	sem_post(state->forks_access);
+	take_forks(state);
 	gettimeofday(&now, NULL);
 	if (!check_pulse(state, now))
 	{
@@ -61,9 +51,27 @@ void	eat(t_state *state)
 	sem_post(state->forks);
 }
 
+void	take_forks(t_state *state)
+{
+	sem_wait(state->forks_access);
+	sem_wait(state->forks);
+	if (!state->is_sim_done)
+		log_message(state->i, "has taken a fork");
+	if (state->n_phils == 1)
+	{
+		while (!state->is_sim_done)
+			usleep(100);
+		return ;
+	}
+	sem_wait(state->forks);
+	if (!state->is_sim_done)
+		log_message(state->i, "has taken a fork");
+	sem_post(state->forks_access);
+}
+
 void	*is_phil_alive(void *arg)
 {
-	struct timeval  now;
+	struct timeval	now;
 	t_state			*state;
 
 	state = (t_state *)arg;
@@ -74,4 +82,14 @@ void	*is_phil_alive(void *arg)
 			return (NULL);
 		usleep(100);
 	}
+}
+
+void	*is_global_done(void *arg)
+{
+	t_state	*state;
+
+	state = (t_state *)arg;
+	sem_wait(state->g_is_sim_done);
+	state->is_sim_done = 1;
+	return (NULL);
 }

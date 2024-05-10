@@ -12,7 +12,7 @@
 # include <fcntl.h>     // For O_* constants
 # include <semaphore.h> // sem_open, 
 
-typedef struct s_state t_state;
+typedef struct s_state	t_state;
 
 struct s_state
 {

@@ -20,7 +20,7 @@ int	main(int ac, char **av)
 		clean_n_raise(&s, "pthread_join");
 	s.i = 0;
 	while (s.i < s.n_phils)
-        waitpid(s.children_pid[s.i++], NULL, 0);
+		waitpid(s.children_pid[s.i++], NULL, 0);
 	full_clean(&s);
 	return (0);
 }
@@ -40,8 +40,8 @@ void	execute_forks(t_state *state)
 
 void	wait_stop_criterias(t_state *state)
 {
-	int i;
-	int finished_pid;
+	int	i;
+	int	finished_pid;
 
 	while (1)
 	{
@@ -50,11 +50,11 @@ void	wait_stop_criterias(t_state *state)
 		{
 			i = 0;
 			while (i < state->n_phils)
-            {
+			{
 				sem_post(state->n_phil_full);
 				sem_post(state->g_is_sim_done);
-                i++;
-            }
+				i++;
+			}
 			return ;
 		}
 		usleep(100);
@@ -63,8 +63,8 @@ void	wait_stop_criterias(t_state *state)
 
 void	*n_meals_routine(void *arg)
 {
-	int i;
-	t_state *state;
+	int		i;
+	t_state	*state;
 
 	state = (t_state *)arg;
 	i = 0;
