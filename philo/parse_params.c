@@ -38,8 +38,8 @@ void	parse_params(int ac, char **av, t_state *state)
 	state->n_phils = ft_atoi(av[1]);
 	if (state->n_phils == 0)
 	{
-		write(STDERR_FILENO, "Error: number_of_philosophers - 0\n", 34);
-		exit(1);
+		write(STDERR_FILENO, "Error: wrong number_of_philosophers - 0\n", 40);
+		show_help();
 	}
 	state->die_ms = ft_atoi(av[2]);
 	state->eat_ms = ft_atoi(av[3]);
@@ -49,6 +49,12 @@ void	parse_params(int ac, char **av, t_state *state)
 		state->total_meals = ft_atoi(av[5]);
 	if (state->total_meals == 0)
 		exit(0);
+	if (state->n_phils < 0 || state->die_ms < 0 || state->eat_ms < 0
+		|| state->sleep_ms < 0 || (ac == 6 && state->total_meals < 0))
+	{
+		write(STDERR_FILENO, "Error: Integer overflow\n", 24);
+		show_help();
+	}
 }
 
 int	validate_params(int ac, char **av)
@@ -59,8 +65,11 @@ int	validate_params(int ac, char **av)
 		return (0);
 	i = 1;
 	while (i < ac)
-		if (!is_number(av[i++]))
+	{
+		if (!is_number(av[i]) || ft_strlen(av[i]) > 10)
 			return (0);
+		i++;
+	}
 	return (1);
 }
 

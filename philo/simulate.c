@@ -6,7 +6,7 @@
 /*   By: dmoroz <dmoroz@student.42warsaw.pl>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/10 14:06:56 by dmoroz            #+#    #+#             */
-/*   Updated: 2024/05/10 14:08:00 by dmoroz           ###   ########.fr       */
+/*   Updated: 2024/05/13 11:43:28 by dmoroz           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@ void	*simulate(void *arg)
 
 	i = ((t_phil_context *)arg)->i;
 	state = ((t_phil_context *)arg)->state;
+	if (i % 2 == 0)
+		usleep((state->eat_ms / 2) * 1000);
 	while (!state->is_sim_done)
 	{
 		eat((t_phil_context *)arg);
@@ -31,7 +33,10 @@ void	*simulate(void *arg)
 			usleep(state->sleep_ms * 1000);
 		}
 		if (!state->is_sim_done)
+		{
 			log_message(i, "is thinking");
+			usleep(state->think_ms * 1000);
+		}
 	}
 	return (NULL);
 }
@@ -52,7 +57,7 @@ void	eat(t_phil_context *c)
 		log_message(c->i, "has taken a fork");
 	if (pthread_mutex_lock(&c->state->mutex_forks[fork_2]) != 0)
 		while (!c->state->is_sim_done)
-			usleep(100);
+			usleep(SMALL_SLEEP);
 	if (!c->state->is_sim_done)
 		log_message(c->i, "has taken a fork");
 	if (!c->state->is_sim_done && !try_update_time(c))
@@ -67,13 +72,14 @@ void	eat(t_phil_context *c)
 
 int	try_update_time(t_phil_context *c)
 {
+	int				is_dead;
 	struct timeval	now;
 
 	gettimeofday(&now, NULL);
-	if (!check_pulse(c, now))
-	{
+	pthread_mutex_lock(&c->mutex_last_meal);
+	is_dead = check_pulse(c, now);
+	if (!is_dead)
 		c->last_meal_tv = now;
-		return (0);
-	}
-	return (1);
+	pthread_mutex_unlock(&c->mutex_last_meal);
+	return (is_dead);
 }

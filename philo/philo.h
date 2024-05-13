@@ -21,7 +21,7 @@
 # include <pthread.h>  // pthread_***
 # include <stddef.h>   // size_t
 
-# define MAIN_CHECKER_SLEEP 100
+# define SMALL_SLEEP 100
 
 typedef struct s_state		t_state;
 typedef struct s_phil_cont	t_phil_context;
@@ -32,11 +32,15 @@ struct s_state
 	int				die_ms;
 	int				eat_ms;
 	int				sleep_ms;
+	int				think_ms;
 	int				total_meals;
 	pthread_t		*threads;
+	int				threads_i;
 	pthread_mutex_t	*mutex_forks;
+	int				mutex_forks_i;
 	t_phil_context	*pcs;
 	int				is_sim_done;
+	pthread_mutex_t	mutex_is_sim_done;
 };
 
 struct s_phil_cont
@@ -44,6 +48,7 @@ struct s_phil_cont
 	int				i;
 	int				n_meals;
 	struct timeval	last_meal_tv;
+	pthread_mutex_t	mutex_last_meal;
 	t_state			*state;
 };
 

@@ -12,13 +12,24 @@
 
 #include "philo.h"
 
+#define DEAD 1
+#define ALIVE 0
+
 int	check_pulse(t_phil_context *c, struct timeval now)
 {
+	pthread_mutex_lock(&c->state->mutex_is_sim_done);
 	if (c->state->is_sim_done)
-		return (1);
+	{
+		pthread_mutex_unlock(&c->state->mutex_is_sim_done);
+		return (DEAD);
+	}
 	if (get_time_diff_ms(now, c->last_meal_tv) < c->state->die_ms)
-		return (0);
+	{
+		pthread_mutex_unlock(&c->state->mutex_is_sim_done);
+		return (ALIVE);
+	}
 	log_message(c->i, "died");
 	c->state->is_sim_done = 1;
-	return (1);
+	pthread_mutex_unlock(&c->state->mutex_is_sim_done);
+	return (DEAD);
 }
