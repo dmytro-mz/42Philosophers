@@ -6,7 +6,7 @@
 /*   By: dmoroz <dmoroz@student.42warsaw.pl>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/10 14:08:29 by dmoroz            #+#    #+#             */
-/*   Updated: 2024/05/10 14:08:41 by dmoroz           ###   ########.fr       */
+/*   Updated: 2024/05/14 14:45:38 by dmoroz           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ struct s_state
 	int				die_ms;
 	int				eat_ms;
 	int				sleep_ms;
+	int				think_ms;
 	int				total_meals;
 	int				n_meals;
 	struct timeval	last_meal_tv;
@@ -40,7 +41,10 @@ struct s_state
 	sem_t			*forks;
 	sem_t			*n_phil_full;
 	sem_t			*g_is_sim_done;
-	int				i;
+	sem_t			*check_pulse_acc;
+	sem_t			**phil_tv_mutex;
+	int				phil_i;
+	// int				phil_tv_mutex_i;
 	int				is_sim_done;
 	int				is_all_phil_full;
 };
@@ -48,6 +52,7 @@ struct s_state
 //ala libft
 size_t	ft_strlen(char *str);
 int		ft_atoi(const char *str);
+void	ft_memset(char *str, char c, int size);
 
 void	parse_params(int ac, char **av, t_state *state);
 int		check_pulse(t_state *state, struct timeval now);
@@ -60,5 +65,8 @@ void	clean_n_raise(t_state *state, char *failed_func_name);
 void	full_clean(t_state *state);
 void	partial_clean(t_state *state);
 void	exit_with_error(char *failed_func_name);
+char	*inc_name(char *name);
+void	*is_phil_alive(void *arg);
+void	*is_global_done(void *arg);
 
 #endif

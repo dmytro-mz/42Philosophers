@@ -1,38 +1,41 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   check_pulse.c                                      :+:      :+:    :+:   */
+/*   simulation_rutines.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dmoroz <dmoroz@student.42warsaw.pl>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/05/10 14:08:14 by dmoroz            #+#    #+#             */
-/*   Updated: 2024/05/14 14:40:54 by dmoroz           ###   ########.fr       */
+/*   Created: 2024/05/14 14:45:57 by dmoroz            #+#    #+#             */
+/*   Updated: 2024/05/14 14:53:04 by dmoroz           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
 
-int	check_pulse(t_state *state, struct timeval now)
+void	*is_phil_alive(void *arg)
 {
-	int	i;
+	struct timeval	now;
+	t_state			*state;
 
-	sem_wait(state->check_pulse_acc);
-	if (state->is_sim_done)
+	state = (t_state *)arg;
+	while (1)
 	{
-		sem_post(state->check_pulse_acc);
-		return (1);
+		sem_wait(state->phil_tv_mutex[state->phil_i]);
+		gettimeofday(&now, NULL);
+		check_pulse(state, now);
+		sem_post(state->phil_tv_mutex[state->phil_i]);
+		if (state->is_sim_done)
+			return (NULL);
+		usleep(100);
 	}
-	if (get_time_diff_ms(now, state->last_meal_tv) < state->die_ms)
-	{
-		sem_post(state->check_pulse_acc);
-		return (0);
-	}
-	log_message(state->phil_i, "died");
+}
+
+void	*is_global_done(void *arg)
+{
+	t_state	*state;
+
+	state = (t_state *)arg;
+	sem_wait(state->g_is_sim_done);
 	state->is_sim_done = 1;
-	i = 0;
-	while (i++ < state->n_phils)
-		sem_post(state->g_is_sim_done);
-	usleep(1000);
-	sem_post(state->check_pulse_acc);
-	return (1);
+	return (NULL);
 }

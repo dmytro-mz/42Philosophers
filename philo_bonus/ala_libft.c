@@ -52,3 +52,12 @@ int	ft_atoi(const char *str)
 	}
 	return (res);
 }
+
+void	ft_memset(char *str, char c, int size)
+{
+	int	i;
+
+	i = 0;
+	while (i < size)
+		str[i++] = c;
+}

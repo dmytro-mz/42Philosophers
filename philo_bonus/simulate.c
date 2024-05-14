@@ -6,7 +6,7 @@
 /*   By: dmoroz <dmoroz@student.42warsaw.pl>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/10 14:08:36 by dmoroz            #+#    #+#             */
-/*   Updated: 2024/05/10 14:08:40 by dmoroz           ###   ########.fr       */
+/*   Updated: 2024/05/14 14:52:06 by dmoroz           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,7 @@
 
 void	eat(t_state *state);
 void	take_forks(t_state *state);
-void	*is_phil_alive(void *arg);
-void	*is_global_done(void *arg);
+void	act(t_state *state, char *action, int sleep_ms);
 
 void	simulate(t_state *state)
 {
@@ -25,21 +24,18 @@ void	simulate(t_state *state)
 	gettimeofday(&state->last_meal_tv, NULL);
 	if (pthread_create(&is_alive_th, NULL, &is_phil_alive, state) != 0
 		|| pthread_create(&is_g_done_th, NULL, &is_global_done, state) != 0)
+	{
+		partial_clean(state);
 		exit_with_error("pthread_create");
+	}
 	while (!state->is_sim_done)
 	{
 		eat(state);
-		if (!state->is_sim_done)
-		{
-			log_message(state->i, "is sleeping");
-			usleep(state->sleep_ms * 1000);
-		}
-		if (!state->is_sim_done)
-			log_message(state->i, "is thinking");
+		act(state, "is sleeping", state->sleep_ms);
+		act(state, "is thinking", state->think_ms);
 	}
-	if (pthread_join(is_alive_th, NULL) != 0
-		|| pthread_join(is_g_done_th, NULL) != 0)
-		exit_with_error("pthread_join");
+	pthread_join(is_alive_th, NULL);
+	pthread_join(is_g_done_th, NULL);
 	partial_clean(state);
 	exit(0);
 }
@@ -49,12 +45,15 @@ void	eat(t_state *state)
 	struct timeval	now;
 
 	take_forks(state);
+	sem_wait(state->phil_tv_mutex[state->phil_i]);
 	gettimeofday(&now, NULL);
-	if (!check_pulse(state, now))
-	{
+	check_pulse(state, now);
+	if (!state->is_sim_done)
 		state->last_meal_tv = now;
-		log_message(state->i, "is eating");
-		usleep(state->eat_ms * 1000);
+	sem_post(state->phil_tv_mutex[state->phil_i]);
+	act(state, "is eating", state->eat_ms);
+	if (!state->is_sim_done)
+	{
 		state->n_meals++;
 		if (state->total_meals > 0 && state->n_meals == state->total_meals)
 			sem_post(state->n_phil_full);
@@ -68,7 +67,7 @@ void	take_forks(t_state *state)
 	sem_wait(state->forks_access);
 	sem_wait(state->forks);
 	if (!state->is_sim_done)
-		log_message(state->i, "has taken a fork");
+		log_message(state->phil_i, "has taken a fork");
 	if (state->n_phils == 1)
 	{
 		while (!state->is_sim_done)
@@ -77,31 +76,15 @@ void	take_forks(t_state *state)
 	}
 	sem_wait(state->forks);
 	if (!state->is_sim_done)
-		log_message(state->i, "has taken a fork");
+		log_message(state->phil_i, "has taken a fork");
 	sem_post(state->forks_access);
 }
 
-void	*is_phil_alive(void *arg)
+void	act(t_state *state, char *action, int sleep_ms)
 {
-	struct timeval	now;
-	t_state			*state;
-
-	state = (t_state *)arg;
-	while (1)
+	if (!state->is_sim_done)
 	{
-		gettimeofday(&now, NULL);
-		if (check_pulse(state, now))
-			return (NULL);
-		usleep(100);
+		log_message(state->phil_i, action);
+		usleep(sleep_ms * 1000);
 	}
-}
-
-void	*is_global_done(void *arg)
-{
-	t_state	*state;
-
-	state = (t_state *)arg;
-	sem_wait(state->g_is_sim_done);
-	state->is_sim_done = 1;
-	return (NULL);
 }

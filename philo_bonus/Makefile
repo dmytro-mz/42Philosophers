@@ -26,7 +26,8 @@ SRCS = $(NAME).c \
        parse_params.c \
        show_help.c \
        simulate.c \
-       time_funcs.c
+       time_funcs.c \
+       simulation_rutines.c
 OBJS = $(SRCS:.c=.o)
 INCS = $(NAME).h
 INCS_DIR = $(dir $(INCS))

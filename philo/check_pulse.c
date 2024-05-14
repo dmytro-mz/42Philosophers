@@ -28,8 +28,8 @@ int	check_pulse(t_phil_context *c, struct timeval now)
 		pthread_mutex_unlock(&c->state->mutex_is_sim_done);
 		return (ALIVE);
 	}
-	log_message(c->i, "died");
 	c->state->is_sim_done = 1;
+	log_message(c->i, "died");
 	pthread_mutex_unlock(&c->state->mutex_is_sim_done);
 	return (DEAD);
 }
