@@ -6,7 +6,7 @@
 /*   By: dmoroz <dmoroz@student.42warsaw.pl>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/10 14:08:17 by dmoroz            #+#    #+#             */
-/*   Updated: 2024/05/14 14:41:15 by dmoroz           ###   ########.fr       */
+/*   Updated: 2024/05/14 18:32:22 by dmoroz           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ void	partial_clean(t_state *state)
 
 void	exit_with_error(char *failed_func_name)
 {
-	write(STDERR_FILENO, "Error occured in function: ", 29);
+	write(STDERR_FILENO, "Error occured in function: ", 27);
 	write(STDERR_FILENO, failed_func_name, ft_strlen(failed_func_name));
 	write(STDERR_FILENO, ". Exiting program!\n", 19);
 	exit(1);

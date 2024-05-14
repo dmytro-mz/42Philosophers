@@ -45,7 +45,7 @@ void	full_clean(t_state *state)
 
 void	write_error(char *reason)
 {
-	write(STDERR_FILENO, "Error occured with function: ", 29);
+	write(STDERR_FILENO, "Error occured in function: ", 27);
 	write(STDERR_FILENO, reason, ft_strlen(reason));
 	write(STDERR_FILENO, ". Exiting program!\n", 19);
 }
